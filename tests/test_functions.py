@@ -2,3 +2,6 @@
 
 # def test_communication():
 #     assert True
+
+def test_dummy():
+    assert True
