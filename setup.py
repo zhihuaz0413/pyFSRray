@@ -1,9 +1,12 @@
 from setuptools import find_packages, setup
 setup(
-    name='FSRray',
     packages=find_packages(include=['FSRray']),
     version='1.0.0',
-    description='My first Python library',
+    name='FSRray',
+    url="https://github.com/Aightech/pyFSRray",
+    description='Python library to communicate with the FSR array',
+    long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     author='Alexis Devillard',
     license='MIT',
     install_requires=['pyserial'],
