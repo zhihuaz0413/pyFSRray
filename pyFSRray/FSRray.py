@@ -3,12 +3,14 @@ import threading
 import struct
 import logging
 import serial.tools.list_ports 
+import time
 
 class FSRray:
-    def __init__(self, width=16, verbose=False):
+    def __init__(self, width=16, nb_layers=1, verbose=False):
         self.array_width = width
+        self.nb_layers = nb_layers
         self._callback = None
-        self._values = [0] * width * width
+        self._values = [0] * width * width * nb_layers
         self._dt = [0] * 2
         self._path = None
         self._baud = 500000
@@ -19,6 +21,15 @@ class FSRray:
         logging.basicConfig(level=logging.DEBUG if verbose else logging.INFO)
         logging.info("FSRray initialized")
 
+    def set_width(self, width):
+        self.array_width = width
+        self._values = [0] * width * width * self.nb_layers
+        logging.info("Array width set to {}".format(width))
+
+    def set_nb_layers(self, nb_layers):
+        self.nb_layers = nb_layers
+        self._values = [0] * self.array_width * self.array_width * nb_layers
+        logging.info("Number of layers set to {}".format(nb_layers))
 
     def set_callback(self, callback):
         self._callback = callback
@@ -33,6 +44,9 @@ class FSRray:
     def disconnect(self):
         self._running = False
         self._thread.join()
+
+    def read_values(self):
+        return self._dt, self._values
 
     def run(self):
         #connect using vid and pid
@@ -50,17 +64,20 @@ class FSRray:
             return
         
         with serial.Serial(port_url, self._baud, timeout=self._timeout) as arduino:
-            d=b'\x00'
             dt = [0, 0]
             self._running = True
             time.sleep(1)
             while(self._running):
                 try:
-                    n = arduino.write(bytes([self.array_width]))# send array width
+                    cmd = bytes([self.array_width])
+                    if self.nb_layers == 2:
+                        cmd = bytes([self.array_width | 0x80])
+                    n = arduino.write(cmd)# send array width
+                    #set to 1 the MSB of n if the number of layers is 2
                     for i in range(2):# read two timestamps on 4 bytes each
                         self._dt[i] = struct.unpack('<I', arduino.read(4))[0]
                         logging.debug("dt[{}] = {}".format(i, self._dt[i]))
-                    for i in range(self.array_width*self.array_width):# read the n*n values on 2 bytes each
+                    for i in range(self.array_width*self.array_width*self.nb_layers):# read the n*n values on 2 bytes each
                         self._values[i] = struct.unpack('<H', arduino.read(2))[0]
                         logging.debug("values[{}] = {}".format(i, self._values[i]))
                     if self._callback:
@@ -76,7 +93,7 @@ if __name__ == "__main__":
     def callback(values, dt):
         print("dt = {}".format(dt[0]))
         print("values = {}".format(values))
-    fsrray = FSRray()
+    fsrray = FSRray(16, 2)
     fsrray.set_callback(callback)
     fsrray.connect()
     time.sleep(5)

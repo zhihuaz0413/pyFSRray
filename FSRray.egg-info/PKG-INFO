@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: FSRray
-Version: 1.0.0
+Version: 1.1.0
 Summary: Python library to communicate with the FSR array
 Home-page: https://github.com/Aightech/pyFSRray
 Author: Alexis Devillard

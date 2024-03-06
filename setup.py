@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 setup(
     packages=find_packages(include=['FSRray']),
-    version='1.0.0',
+    version='1.1.0',
     name='FSRray',
     url="https://github.com/Aightech/pyFSRray",
     description='Python library to communicate with the FSR array',
