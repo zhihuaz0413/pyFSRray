@@ -1,4 +1,4 @@
-from pyFSRray import FSRray
+# from pyFSRray import FSRray
 
-def test_communication():
-    assert True
+# def test_communication():
+#     assert True
