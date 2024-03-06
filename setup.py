@@ -7,7 +7,7 @@ setup(
     author='Alexis Devillard',
     license='MIT',
     install_requires=['pyserial'],
-    setup_requires=['pytest-runner'],
-    tests_require=['pytest==4.4.1'],
+    setup_requires=['pytest-runner', 'pyserial'],
+    tests_require=['pytest==4.4.1', 'pyserial'],
     test_suite='tests',
 )
