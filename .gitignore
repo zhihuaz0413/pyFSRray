@@ -1,5 +1,7 @@
 /build
 /venv
 /venv/*
+/data
+/data/*
 /.vscode
 /.vscode/*

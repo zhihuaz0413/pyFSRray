@@ -4,6 +4,7 @@ import struct
 import logging
 import serial.tools.list_ports 
 import time
+import numpy as np
 
 class FSRray:
     def __init__(self, width=16, nb_layers=1, verbose=False):
@@ -92,7 +93,9 @@ if __name__ == "__main__":
     import time
     def callback(values, dt):
         print("dt = {}".format(dt[0]))
-        print("values = {}".format(values))
+        #print 16x16 array
+        for i in range(16):
+            print(values[i*16:(i+1)*16])
     fsrray = FSRray(16, 2)
     fsrray.set_callback(callback)
     fsrray.connect()
